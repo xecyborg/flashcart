@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'testroom',
     'debug_toolbar',
     'store',
+    'custom_store',
     'tags',
     'likes',
 ]
