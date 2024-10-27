@@ -1,3 +1,4 @@
+from store.pagination import DefaultPagination
 from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -15,6 +16,9 @@ class ProductViewSet(ModelViewSet):
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_class = ProductFilter
+    pagination_class = DefaultPagination
+    search_fields = ['title', 'description']
+    ordering_fields = ['unit_price', 'last_update']
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -31,6 +35,7 @@ class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(
         products_count=Count('products')).all()
     serializer_class = CollectionSerializer
+    pagination_class = DefaultPagination
 
     def delete(self, request, pk):
         collection = get_object_or_404(Collection, pk=pk)
@@ -38,6 +43,7 @@ class CollectionViewSet(ModelViewSet):
             return Response({'error': 'Collection cannot be deleted because it includes one or more products.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
         collection.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
