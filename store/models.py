@@ -74,6 +74,7 @@ class Customer(models.Model):
     class Meta:
         ordering = ['user__first_name', 'user__last_name']
 
+
 class Order(models.Model):
     PAYMENT_STATUS_PENDING = 'P'
     PAYMENT_STATUS_COMPLETE = 'C'
@@ -88,6 +89,11 @@ class Order(models.Model):
     payment_status = models.CharField(
         max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+
+    class Meta:
+        permissions = [
+            ('cancel_order', 'Can cancel order')
+        ]
 
 
 class OrderItem(models.Model):
